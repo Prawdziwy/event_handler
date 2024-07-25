@@ -1669,6 +1669,7 @@ section#page .btn-watch-video:hover i {
 # Faq Section
 --------------------------------------------------------------*/
 .faq .section-title {
+  margin-top: 70px;
   padding-bottom: 20px;
 }
 

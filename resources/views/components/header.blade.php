@@ -8,6 +8,7 @@
 		<nav id="navmenu" class="navmenu">
 			<ul>
 				<li><a href="{{ url('/') }}">Home</a></li>
+				<li><a href="{{ url('faq') }}">FAQ</a></li>
 				@guest
 					@if (Route::has('login'))
 						<li class="nav-item">
@@ -31,11 +32,17 @@
 				</a>
 
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<!-- Profile -->
+					@if (Route::has('pages.profile.show'))
+						<a class="dropdown-item" href="{{ route('pages.profile.show') }}">
+							{{ __('Profile') }}
+						</a>
+					@endif
+					<!-- Logout -->
 					<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-																									document.getElementById('logout-form').submit();">
+																										document.getElementById('logout-form').submit();">
 						{{ __('Logout') }}
 					</a>
-
 					<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
 						@csrf
 					</form>
