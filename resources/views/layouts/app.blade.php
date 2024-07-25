@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Index - QuickStart Bootstrap Template</title>
+    <title>Event Handler - Plan your events</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -21,14 +21,6 @@
 
     <!-- Main CSS File -->
     @vite('resources/css/app.css')
-
-    <!-- =======================================================
-  * Template Name: QuickStart
-  * Template URL: https://bootstrapmade.com/quickstart-bootstrap-startup-website-template/
-  * Updated: Jun 29 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-    ======================================================== -->
 </head>
 
 <body class="index-page">

@@ -1,41 +1,47 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
 	<div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-		<a href="index.html" class="logo d-flex align-items-center me-auto">
+		<a href="{{ url('/') }}" class="logo d-flex align-items-center me-auto">
 			<img src="{{ asset('img/logo.png') }}" alt="">
 		</a>
 
 		<nav id="navmenu" class="navmenu">
 			<ul>
-				<li><a href="index.html#hero" class="active">Home</a></li>
-				<li><a href="index.html#about">About</a></li>
-				<li><a href="index.html#features">Features</a></li>
-				<li><a href="index.html#services">Services</a></li>
-				<li><a href="index.html#pricing">Pricing</a></li>
-				<li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-					<ul>
-						<li><a href="#">Dropdown 1</a></li>
-						<li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i
-									class="bi bi-chevron-down toggle-dropdown"></i></a>
-							<ul>
-								<li><a href="#">Deep Dropdown 1</a></li>
-								<li><a href="#">Deep Dropdown 2</a></li>
-								<li><a href="#">Deep Dropdown 3</a></li>
-								<li><a href="#">Deep Dropdown 4</a></li>
-								<li><a href="#">Deep Dropdown 5</a></li>
-							</ul>
+				<li><a href="{{ url('/') }}">Home</a></li>
+				@guest
+					@if (Route::has('login'))
+						<li class="nav-item">
+							<a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
 						</li>
-						<li><a href="#">Dropdown 2</a></li>
-						<li><a href="#">Dropdown 3</a></li>
-						<li><a href="#">Dropdown 4</a></li>
-					</ul>
-				</li>
-				<li><a href="index.html#contact">Contact</a></li>
+					@endif
+				@endguest
 			</ul>
 			<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 		</nav>
 
-		<a class="btn-getstarted" href="index.html#about">Get Started</a>
+		@guest
+			@if (Route::has('register'))
+				<a class="btn-getstarted" href="{{ route('register') }}">Register</a>
+			@endif
+		@else
+			<div class="nav-item dropdown">
+				<a id="navbarDropdown" class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false" v-pre>
+					{{ Auth::user()->name }}
+				</a>
+
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+																									document.getElementById('logout-form').submit();">
+						{{ __('Logout') }}
+					</a>
+
+					<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+						@csrf
+					</form>
+				</div>
+			</div>
+		@endguest
 
 	</div>
 </header>

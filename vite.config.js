@@ -15,10 +15,10 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
-            'swiper': path.resolve(__dirname, 'node_modules/swiper'),
             'bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
             'aos': path.resolve(__dirname, 'node_modules/aos'),
             'glightbox': path.resolve(__dirname, 'node_modules/glightbox'),
+            'swiper': path.resolve(__dirname, 'node_modules/swiper'),
         },
     },
 });
