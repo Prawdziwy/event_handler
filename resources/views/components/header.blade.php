@@ -38,6 +38,12 @@
 							{{ __('Profile') }}
 						</a>
 					@endif
+					<!-- Calendars -->
+					@if (Route::has('calendars.index'))
+						<a class="dropdown-item" href="{{ route('calendars.index') }}">
+							{{ __('Calendars') }}
+						</a>
+					@endif
 					<!-- Logout -->
 					<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
 																										document.getElementById('logout-form').submit();">

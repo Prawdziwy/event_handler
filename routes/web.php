@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,4 +33,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('pages.profile.password.edit');
     Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('pages.profile.password.update');
+
+    Route::resource('calendars', CalendarController::class);
 });

@@ -2069,13 +2069,15 @@ section#page .btn-watch-video:hover i {
   color: var(--accent-color);
 }
 
-/*--------------------------------------------------------------
-# Starter Section Section
---------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
-}
-
 .float-right {
   float: right;
+}
+
+tr.clickable-row {
+  cursor: pointer;
+  transition: filter 0.1s ease;
+}
+
+tr.clickable-row:hover {
+  filter: brightness(96%);
 }

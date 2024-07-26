@@ -11,7 +11,7 @@ import AOS from 'aos';
 import GLightbox from 'glightbox';
 import Swiper from 'swiper';
 
-(function() {
+(function () {
   "use strict";
 
   /**
@@ -55,7 +55,7 @@ import Swiper from 'swiper';
    * Toggle mobile nav dropdowns
    */
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
+    navmenu.addEventListener('click', function (e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
@@ -105,8 +105,6 @@ import Swiper from 'swiper';
       mirror: false
     });
   }
-  window.addEventListener('load', aosInit);
-
   /**
    * Initiate glightbox
    */
@@ -127,7 +125,7 @@ import Swiper from 'swiper';
    * Init swiper sliders
    */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
       let config = JSON.parse(
         swiperElement.querySelector(".swiper-config").innerHTML.trim()
       );
@@ -139,13 +137,27 @@ import Swiper from 'swiper';
       }
     });
   }
+  function initClickableRows() {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+      row.addEventListener('click', function() {
+        const href = this.getAttribute('data-href');
+        if (href) {
+          window.location = href;
+        }
+      });
+    });
+  }
 
-  window.addEventListener("load", initSwiper);
+  window.addEventListener('load', function() {
+    initSwiper();
+    aosInit();
+    initClickableRows();
+  });
 
   /**
    * Correct scrolling position upon page load for URLs containing hash links.
    */
-  window.addEventListener('load', function(e) {
+  window.addEventListener('load', function (e) {
     if (window.location.hash) {
       if (document.querySelector(window.location.hash)) {
         setTimeout(() => {

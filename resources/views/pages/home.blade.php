@@ -17,6 +17,10 @@
 					@if (Route::has('register'))
 						<a href="{{ route('register') }}" class="btn-get-started">Register</a>
 					@endif
+				@else
+					@if (Route::has('calendars.index'))
+						<a href="{{ route('calendars.index') }}" class="btn-get-started">Calendars</a>
+					@endif
 				@endif
 			</div>
 			<img class="mt-1" src="{{ asset('img/hero-services-img.webp') }}" class="img-fluid basic-img" alt=""
