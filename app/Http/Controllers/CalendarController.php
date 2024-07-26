@@ -28,6 +28,13 @@ class CalendarController extends Controller
         return view('pages.calendars.create');
     }
 
+    public function show($id)
+    {
+        $calendar = Calendar::findOrFail($id);
+
+        return view('pages.calendars.show', compact('calendar'));
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

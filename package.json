@@ -16,6 +16,10 @@
         "vite-plugin-svgr": "^4.2.0"
     },
     "dependencies": {
+        "@fullcalendar/bootstrap": "^6.1.15",
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/daygrid": "^6.1.15",
+        "@fullcalendar/interaction": "^6.1.15",
         "aos": "^2.3.4",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
