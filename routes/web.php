@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\Calendar\CalendarController;
+use App\Http\Controllers\Calendar\CalendarEventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,5 @@ Route::middleware('auth')->group(function () {
     Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('pages.profile.password.update');
 
     Route::resource('calendars', CalendarController::class);
+    Route::post('calendars/{calendar}/events', [CalendarEventController::class, 'store'])->name('calendars.events.store');
 });
