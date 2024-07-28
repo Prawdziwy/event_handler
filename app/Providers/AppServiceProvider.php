@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
         Blade::component('components.add-event-form', 'add-event-form');
         Blade::component('components.members-list', 'members-list');
