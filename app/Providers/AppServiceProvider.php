@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +18,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        Blade::component('components.add-event-form', 'add-event-form');
+        Blade::component('components.members-list', 'members-list');
+        Blade::component('components.calendar-header', 'calendar-header');
+        Blade::component('components.calendar-view', 'calendar-view');
     }
+
 }
