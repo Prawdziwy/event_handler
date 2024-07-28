@@ -20,10 +20,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::component('components.add-event-form', 'add-event-form');
-        Blade::component('components.members-list', 'members-list');
-        Blade::component('components.calendar-header', 'calendar-header');
-        Blade::component('components.calendar-view', 'calendar-view');
+        // Calendars
+        Blade::components([
+            'components.calendar.calendars-empty' => 'calendars-empty',
+            'components.calendar.create-button' => 'calendar-create-button',
+            'components.calendar.show-add-event' => 'calendar-show-add-event-form',
+            'components.calendar.show-calendar' => 'calendar-show',
+            'components.calendar.show-info' => 'calendar-show-info',
+            'components.calendar.show-members-list' => 'calendar-show-members-list',
+            'components.calendar.table' => 'calendar-table',
+        ]);
+
+        // Profile
+        Blade::components([
+            'components.profile.edit-form' => 'profile-edit-form',
+            'components.profile.edit-password-form' => 'profile-edit-password-form',
+        ]);
+
+        // Home
+        Blade::components([
+            'components.home.get-started' => 'home-get-started',
+            'components.home.more-features' => 'home-more-features',
+        ]);
     }
 
 }

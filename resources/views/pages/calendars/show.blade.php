@@ -5,8 +5,8 @@
     <div class="container">
         <x-calendar-show-info :calendar="$calendar" />
         <x-calendar-show-members-list :calendar="$calendar" />
-        <x-calendar-show-calendar :calendar="$calendar" />
-        <x-calendar-show-add-event :calendar="$calendar" />
+        <x-calendar-show :calendar="$calendar" />
+        <x-calendar-show-add-event-form :calendar="$calendar" />
     </div>
 </section>
 @endsection
