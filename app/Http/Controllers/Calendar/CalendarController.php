@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Calendar;
 
 use App\Http\Controllers\Controller;
 use App\Models\Calendar;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -53,5 +54,37 @@ class CalendarController extends Controller
         ]);
 
         return redirect()->route('calendars.index')->with('success', sprintf('Calendar %s created successfully.', $calendar->name));
+    }
+
+    public function addMember(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'member_email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $calendar = Calendar::findOrFail($id);
+        $user = User::where('email', $request->member_email)->first();
+
+        if ($calendar->members->contains($user)) {
+            return redirect()->back()->withErrors(['member_email' => 'User is already a member of this calendar.']);
+        }
+
+        $calendar->members()->attach($user->id);
+
+        return redirect()->route('calendars.show', $calendar)->with('success', sprintf('User %s added successfully.', $user->name));
+    }
+
+    public function removeMember($calendarId, $memberId)
+    {
+        $calendar = Calendar::findOrFail($calendarId);
+        $calendar->members()->detach($memberId);
+
+        return redirect()->route('calendars.show', $calendar)->with('success', 'Member removed successfully.');
     }
 }
