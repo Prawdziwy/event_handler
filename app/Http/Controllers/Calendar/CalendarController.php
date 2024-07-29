@@ -31,9 +31,21 @@ class CalendarController extends Controller
 
     public function show($id)
     {
-        $calendar = Calendar::findOrFail($id);
+        $calendar = Calendar::with('members')->findOrFail($id);
+        $user = Auth::user();
 
-        return view('pages.calendars.show', compact('calendar'));
+        if (!$calendar->members->contains($user->id) && $calendar->owner_id !== $user->id) {
+            return redirect()->route('calendars.index')->withErrors('You do not have access to this calendar.');
+        }
+
+        $members = $calendar->members->map(function ($member) use ($calendar) {
+            $member->isOwner = $member->id === $calendar->owner_id;
+            return $member;
+        })->sortBy(function ($member) {
+            return $member->isOwner ? '0' : '1' . $member->name;
+        });
+
+        return view('pages.calendars.show', compact('calendar', 'members'));
     }
 
     public function store(Request $request)
@@ -58,6 +70,12 @@ class CalendarController extends Controller
 
     public function addMember(Request $request, $id)
     {
+        $calendar = Calendar::findOrFail($id);
+
+        if (Auth::id() !== $calendar->owner_id) {
+            return redirect()->route('calendars.show', $calendar)->withErrors('Only the owner can add members.');
+        }
+
         $validator = Validator::make($request->all(), [
             'member_email' => 'required|email|exists:users,email',
         ]);
@@ -68,7 +86,6 @@ class CalendarController extends Controller
                 ->withInput();
         }
 
-        $calendar = Calendar::findOrFail($id);
         $user = User::where('email', $request->member_email)->first();
 
         if ($calendar->members->contains($user)) {
@@ -83,8 +100,40 @@ class CalendarController extends Controller
     public function removeMember($calendarId, $memberId)
     {
         $calendar = Calendar::findOrFail($calendarId);
+
+        if (Auth::id() !== $calendar->owner_id) {
+            return redirect()->route('calendars.show', $calendar)->withErrors('Only the owner can remove members.');
+        }
+
         $calendar->members()->detach($memberId);
 
         return redirect()->route('calendars.show', $calendar)->with('success', 'Member removed successfully.');
+    }
+
+    public function leaveCalendar($calendarId)
+    {
+        $calendar = Calendar::findOrFail($calendarId);
+        $userId = Auth::id();
+
+        if ($calendar->owner_id === $userId) {
+            return redirect()->route('calendars.show', $calendar)->withErrors('Owner cannot leave their own calendar.');
+        }
+
+        $calendar->members()->detach($userId);
+
+        return redirect()->route('calendars.index')->with('success', 'You have left the calendar.');
+    }
+
+    public function deleteCalendar($id)
+    {
+        $calendar = Calendar::findOrFail($id);
+
+        if (Auth::id() !== $calendar->owner_id) {
+            return redirect()->route('calendars.show', $calendar)->withErrors('Only the owner can delete the calendar.');
+        }
+
+        $calendar->delete();
+
+        return redirect()->route('calendars.index')->with('success', 'Calendar deleted successfully.');
     }
 }

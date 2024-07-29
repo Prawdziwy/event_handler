@@ -29,15 +29,18 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::get('profile', [ProfileController::class, 'show'])->name('pages.profile.show');
-    Route::post('profile', [ProfileController::class, 'update'])->name('pages.profile.update');
-
-    Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('pages.profile.password.edit');
-    Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('pages.profile.password.update');
+    Route::prefix('profile')->name('pages.profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('show');
+        Route::post('/', [ProfileController::class, 'update'])->name('update');
+        Route::get('/password', [ProfileController::class, 'editPassword'])->name('password.edit');
+        Route::post('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    });
 
     Route::resource('calendars', CalendarController::class);
     Route::post('calendars/{calendar}/events', [CalendarEventController::class, 'store'])->name('calendars.events.store');
 
     Route::post('calendars/{calendar}/add-member', [CalendarController::class, 'addMember'])->name('calendars.add-member');
     Route::delete('calendars/{calendar}/remove-member/{member}', [CalendarController::class, 'removeMember'])->name('calendars.remove-member');
+    Route::delete('calendars/{calendar}/leave', [CalendarController::class, 'leaveCalendar'])->name('calendars.leave');
+    Route::delete('calendars/{calendar}', [CalendarController::class, 'deleteCalendar'])->name('calendars.delete');
 });

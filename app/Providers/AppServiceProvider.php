@@ -28,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
             'components.calendar.show-calendar' => 'calendar-show',
             'components.calendar.show-info' => 'calendar-show-info',
             'components.calendar.show-members-list' => 'calendar-show-members-list',
+            'components.calendar.show-members-single' => 'calendar-show-members-single',
+            'components.calendar.show-members-add' => 'calendar-show-members-add',
             'components.calendar.table' => 'calendar-table',
         ]);
 
