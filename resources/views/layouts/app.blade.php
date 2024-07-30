@@ -40,8 +40,11 @@
 	<!-- Preloader -->
 	<div id="preloader"></div>
 
+	<x-alerts />
+
 	<!-- Main JS File -->
 	@vite('resources/js/app.js')
+	@vite('resources/js/alerts.js')
 	@stack('scripts')
 </body>
 
