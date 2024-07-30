@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\User;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {
-    public function show()
+    public function show(): View
     {
         return view('pages.profile.show', ['user' => Auth::user()]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $user = Auth::user();
 
@@ -31,12 +33,12 @@ class ProfileController extends Controller
         return redirect()->route('pages.profile.show')->with('status', 'Profile updated successfully');
     }
 
-    public function editPassword()
+    public function editPassword(): View
     {
         return view('pages.profile.edit-password');
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([
             'current_password' => ['required', 'string', 'min:8'],

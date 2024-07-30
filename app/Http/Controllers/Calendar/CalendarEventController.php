@@ -3,11 +3,12 @@ namespace App\Http\Controllers\Calendar;
 
 use App\Http\Controllers\Controller;
 use App\Models\Calendar;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CalendarEventController extends Controller
 {
-    public function store(Request $request, Calendar $calendar)
+    public function store(Request $request, Calendar $calendar): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',

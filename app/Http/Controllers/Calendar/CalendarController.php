@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Calendar;
 use App\Http\Controllers\Controller;
 use App\Models\Calendar;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\View\View;
 
 class CalendarController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $user = Auth::user();
 
@@ -23,12 +25,12 @@ class CalendarController extends Controller
         return view('pages.calendars.index', compact('calendars'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('pages.calendars.create');
     }
 
-    public function show($id)
+    public function show(int $id): RedirectResponse|View
     {
         $calendar = Calendar::with('members')->findOrFail($id);
         $user = Auth::user();
@@ -47,7 +49,7 @@ class CalendarController extends Controller
         return view('pages.calendars.show', compact('calendar', 'members'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:calendars',
@@ -61,7 +63,7 @@ class CalendarController extends Controller
         return redirect()->route('calendars.index')->with('success', sprintf('Calendar %s created successfully.', $calendar->name));
     }
 
-    public function addMember(Request $request, $id)
+    public function addMember(Request $request, int $id): RedirectResponse
     {
         $calendar = Calendar::findOrFail($id);
 
@@ -84,7 +86,7 @@ class CalendarController extends Controller
         return redirect()->route('calendars.show', $calendar)->with('success', sprintf('User %s added successfully.', $user->name));
     }
 
-    public function removeMember($calendarId, $memberId)
+    public function removeMember(int $calendarId, int $memberId): RedirectResponse
     {
         $calendar = Calendar::findOrFail($calendarId);
 
@@ -97,7 +99,7 @@ class CalendarController extends Controller
         return redirect()->route('calendars.show', $calendar)->with('success', 'Member removed successfully.');
     }
 
-    public function leaveCalendar($calendarId)
+    public function leaveCalendar(int $calendarId): RedirectResponse
     {
         $calendar = Calendar::findOrFail($calendarId);
         $userId = Auth::id();
@@ -111,7 +113,7 @@ class CalendarController extends Controller
         return redirect()->route('calendars.index')->with('success', 'You have left the calendar.');
     }
 
-    public function deleteCalendar($id)
+    public function deleteCalendar(int $id): RedirectResponse
     {
         $calendar = Calendar::findOrFail($id);
 

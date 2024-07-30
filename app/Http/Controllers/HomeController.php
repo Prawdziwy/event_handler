@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
@@ -11,12 +11,12 @@ class HomeController extends Controller
 	 *
 	 * @return \Illuminate\Contracts\Support\Renderable
 	 */
-	public function index()
+	public function index(): View
 	{
 		return view('pages.home');
 	}
 
-	public function faq()
+	public function faq(): View
 	{
 		return view('pages.faq');
 	}
