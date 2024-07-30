@@ -19,16 +19,10 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:users,name,' . $user->id],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $user->update([
             'name' => $request->name,
@@ -45,16 +39,10 @@ class ProfileController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'current_password' => ['required', 'string', 'min:8'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $user = Auth::user();
 

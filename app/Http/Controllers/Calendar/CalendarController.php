@@ -50,15 +50,9 @@ class CalendarController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required|string|max:255|unique:calendars',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $calendar = Calendar::create([
             'name' => $request->name,
@@ -76,15 +70,9 @@ class CalendarController extends Controller
             return redirect()->route('calendars.show', $calendar)->withErrors('Only the owner can add members.');
         }
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'member_email' => 'required|email|exists:users,email',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $user = User::where('email', $request->member_email)->first();
 

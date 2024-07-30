@@ -11,17 +11,11 @@ class CalendarEventController extends Controller
 {
     public function store(Request $request, Calendar $calendar)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $calendar->events()->create($request->all());
 
