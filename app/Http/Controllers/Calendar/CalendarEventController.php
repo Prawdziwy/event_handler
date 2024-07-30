@@ -3,9 +3,7 @@ namespace App\Http\Controllers\Calendar;
 
 use App\Http\Controllers\Controller;
 use App\Models\Calendar;
-use App\Models\CalendarEvent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CalendarEventController extends Controller
 {
