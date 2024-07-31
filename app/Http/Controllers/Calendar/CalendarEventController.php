@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Validator;
 class CalendarEventController extends Controller
 {
     public function store(Request $request, Calendar $calendar): RedirectResponse
+    public function store(StoreEventRequest $request, Calendar $calendar): RedirectResponse
     {
         $this->authorizeCalendarAccess($calendar);
 
         $this->validateEvent($request);
 
-        $calendar->events()->create($request->only(['name', 'start_date', 'end_date']));
+        $calendar->events()->create($request->validated());
         return redirect()->route('calendars.show', $calendar);
     }
 
