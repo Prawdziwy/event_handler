@@ -48,6 +48,7 @@ function handleDateClick(info) {
     }
 
     updateFormFields(startDate, endDate);
+    scrollToForm();
 }
 
 function handleSelect(info) {
@@ -64,6 +65,7 @@ function handleSelect(info) {
     }
 
     updateFormFields(startDate, endDate);
+    scrollToForm();
 }
 
 function handleEventClick(info) {
@@ -99,4 +101,11 @@ function formatDateForInput(date) {
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function scrollToForm() {
+    const form = document.getElementById('add-event-form');
+    if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }

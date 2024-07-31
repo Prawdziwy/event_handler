@@ -4,7 +4,7 @@
 	</div>
 
 	<div class="card-body">
-		<form method="POST" action="{{ route('calendars.events.store', $calendar) }}">
+		<form method="POST" action="{{ route('calendars.events.store', $calendar) }}" id="add-event-form">
 			@csrf
 
 			<div class="row mb-3">
