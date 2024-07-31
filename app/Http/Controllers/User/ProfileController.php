@@ -1,36 +1,28 @@
 <?php
-
 namespace App\Http\Controllers\User;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\View;
 
 class ProfileController extends Controller
 {
     public function show(): View
     {
-        return view('pages.profile.show', ['user' => Auth::user()]);
+        return view('pages.profile.show', ['user' => auth()->user()]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:users,name,' . $user->id],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-        ]);
+        $user->update($request->validated());
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
-
-        return redirect()->route('pages.profile.show')->with('status', 'Profile updated successfully');
+        return redirect()->route('pages.profile.show')
+            ->with('status', 'Profile updated successfully');
     }
 
     public function editPassword(): View
@@ -38,14 +30,9 @@ class ProfileController extends Controller
         return view('pages.profile.edit-password');
     }
 
-    public function updatePassword(Request $request): RedirectResponse
+    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
-        $request->validate([
-            'current_password' => ['required', 'string', 'min:8'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = Auth::user();
+        $user = auth()->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
             return redirect()->back()
@@ -53,10 +40,9 @@ class ProfileController extends Controller
                 ->withInput();
         }
 
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $user->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->route('pages.profile.show')->with('status', 'Password updated successfully');
+        return redirect()->route('pages.profile.show')
+            ->with('status', 'Password updated successfully');
     }
 }
