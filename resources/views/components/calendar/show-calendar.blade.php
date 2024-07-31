@@ -7,3 +7,11 @@
 		<div id="calendar"></div>
 	</div>
 </div>
+
+@push('scripts')
+	<script>
+		window.calendarEvents = @json($events);
+	</script>
+
+	@vite('resources/js/calendar.js')
+@endpush

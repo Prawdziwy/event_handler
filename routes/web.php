@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('calendars', CalendarController::class);
     Route::post('calendars/{calendar}/events', [CalendarEventController::class, 'store'])->name('calendars.events.store');
+    Route::delete('calendars/{calendar}/events/{event}', [CalendarEventController::class, 'destroy'])->name('events.destroy');
 
     Route::post('calendars/{calendar}/add-member', [CalendarController::class, 'addMember'])->name('calendars.add-member');
     Route::delete('calendars/{calendar}/remove-member/{member}', [CalendarController::class, 'removeMember'])->name('calendars.remove-member');

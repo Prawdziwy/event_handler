@@ -32,7 +32,7 @@ class CalendarController extends Controller
 
     public function show(int $id): RedirectResponse|View
     {
-        $calendar = Calendar::with('members')->findOrFail($id);
+        $calendar = Calendar::with(['members', 'events'])->findOrFail($id);
         $user = Auth::user();
 
         if (!$calendar->members->contains($user->id) && $calendar->owner_id !== $user->id) {
@@ -46,7 +46,17 @@ class CalendarController extends Controller
             return $member->isOwner ? '0' : '1' . $member->name;
         });
 
-        return view('pages.calendars.show', compact('calendar', 'members'));
+        $events = $calendar->events->map(function ($event) {
+            return [
+                'title' => $event->name,
+                'start' => $event->start_date,
+                'end' => $event->end_date,
+                'id' => $event->id,
+                'calendar_id' => $event->calendar_id
+            ];
+        });
+
+        return view('pages.calendars.show', compact('calendar', 'members', 'events'));
     }
 
     public function store(Request $request): RedirectResponse
