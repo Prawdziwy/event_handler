@@ -6,18 +6,13 @@ use App\Models\Calendar;
 use App\Models\CalendarEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreEventRequest;
 
 class CalendarEventController extends Controller
 {
-    public function store(Request $request, Calendar $calendar): RedirectResponse
     public function store(StoreEventRequest $request, Calendar $calendar): RedirectResponse
     {
-        $this->authorizeCalendarAccess($calendar);
-
-        $this->validateEvent($request);
+        $this->authorize('access', $calendar);
 
         $calendar->events()->create($request->validated());
         return redirect()->route('calendars.show', $calendar);
@@ -25,40 +20,9 @@ class CalendarEventController extends Controller
 
     public function destroy(Calendar $calendar, CalendarEvent $event): JsonResponse
     {
-        $this->authorizeCalendarAccess($calendar);
-
-        $this->authorizeEvent($calendar, $event);
+        $this->authorize('verifyCalendar', [$event, $calendar]);
 
         $event->delete();
         return response()->json(['success' => true]);
-    }
-
-    private function authorizeCalendarAccess(Calendar $calendar): void
-    {
-        $user = Auth::user();
-
-        if (!$calendar->members->contains($user->id) && $calendar->owner_id !== $user->id) {
-            abort(403, 'You do not have access to this calendar.');
-        }
-    }
-
-    private function authorizeEvent(Calendar $calendar, CalendarEvent $event): void
-    {
-        if ($event->calendar_id !== $calendar->id) {
-            abort(404, 'Event not found.');
-        }
-    }
-
-    private function validateEvent(Request $request): void
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-
-        if ($validator->fails()) {
-            abort(422, $validator->errors()->first());
-        }
     }
 }
