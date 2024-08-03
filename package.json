@@ -28,5 +28,9 @@
         "bootstrap-icons": "^1.11.3",
         "glightbox": "^3.3.0",
         "swiper": "^11.1.7"
+    },
+    "engines": {
+        "npm": "9.7.1",
+        "node": ">=20.0.0"
     }
 }
