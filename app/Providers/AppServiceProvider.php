@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
+use App\Services\CalendarServiceInterface;
+use App\Services\CalendarService;
+use App\Services\CalendarEventServiceInterface;
+use App\Services\CalendarEventService;
+use App\Services\ProfileServiceInterface;
+use App\Services\ProfileService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CalendarServiceInterface::class, CalendarService::class);
+        $this->app->bind(CalendarEventServiceInterface::class, CalendarEventService::class);
+        $this->app->bind(ProfileServiceInterface::class, ProfileService::class);
     }
 
     /**

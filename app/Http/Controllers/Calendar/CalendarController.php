@@ -6,20 +6,27 @@ use App\Http\Requests\StoreCalendarRequest;
 use App\Http\Requests\AddMemberRequest;
 use App\Models\Calendar;
 use App\Models\User;
+use App\Services\CalendarServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\View;
 
 class CalendarController extends Controller
 {
+    protected CalendarServiceInterface $calendarService;
+
+    public function __construct(CalendarServiceInterface $calendarService)
+    {
+        $this->calendarService = $calendarService;
+    }
+
     public function index(): View
     {
-        $user = Auth::user();
+        $authUserId = Auth::id();
 
-        $calendars = Calendar::withCount('members')
-            ->where('owner_id', $user->id)
-            ->orWhereHas('members', fn($query) => $query->where('user_id', $user->id))
-            ->get();
+        $user = User::findOrFail($authUserId);
+
+        $calendars = $this->calendarService->getUserCalendars($user);
 
         return view('pages.calendars.index', compact('calendars'));
     }
@@ -51,10 +58,7 @@ class CalendarController extends Controller
 
     public function store(StoreCalendarRequest $request): RedirectResponse
     {
-        $calendar = Calendar::create([
-            'name' => $request->name,
-            'owner_id' => Auth::id(),
-        ]);
+        $calendar = $this->calendarService->createCalendar($request->validated());
 
         return redirect()->route('calendars.index')
             ->with('success', sprintf('Calendar %s created successfully.', $calendar->name));
@@ -64,23 +68,20 @@ class CalendarController extends Controller
     {
         $this->authorize('access', $calendar);
 
-        $user = User::where('email', $request->member_email)->firstOrFail();
-
-        if ($calendar->members->contains($user)) {
-            return redirect()->back()->withErrors(['member_email' => 'User is already a member of this calendar.']);
+        try {
+            $this->calendarService->addMember($calendar, $request->member_email);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['member_email' => $e->getMessage()]);
         }
 
-        $calendar->members()->attach($user->id);
-
         return redirect()->route('calendars.show', $calendar)
-            ->with('success', sprintf('User %s added successfully.', $user->name));
+            ->with('success', sprintf('User added successfully.'));
     }
 
     public function removeMember(Calendar $calendar, int $memberId): RedirectResponse
     {
         $this->authorize('access', $calendar);
-
-        $calendar->members()->detach($memberId);
+        $this->calendarService->removeMember($calendar, $memberId);
 
         return redirect()->route('calendars.show', $calendar)
             ->with('success', 'Member removed successfully.');
@@ -90,14 +91,12 @@ class CalendarController extends Controller
     {
         $this->authorize('access', $calendar);
 
-        $userId = Auth::id();
-
-        if ($calendar->owner_id === $userId) {
+        try {
+            $this->calendarService->leaveCalendar($calendar, Auth::id());
+        } catch (\Exception $e) {
             return redirect()->route('calendars.show', $calendar)
-                ->withErrors('Owner cannot leave their own calendar.');
+                ->withErrors($e->getMessage());
         }
-
-        $calendar->members()->detach($userId);
 
         return redirect()->route('calendars.index')
             ->with('success', 'You have left the calendar.');
@@ -106,10 +105,10 @@ class CalendarController extends Controller
     public function deleteCalendar(Calendar $calendar): RedirectResponse
     {
         $this->authorize('access', $calendar);
-
-        $calendar->delete();
+        $this->calendarService->deleteCalendar($calendar);
 
         return redirect()->route('calendars.index')
             ->with('success', 'Calendar deleted successfully.');
     }
 }
+

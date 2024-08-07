@@ -4,22 +4,29 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UpdatePasswordRequest;
-use Illuminate\Support\Facades\Hash;
+use App\Services\ProfileServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\View;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
+    protected ProfileServiceInterface $profileService;
+
+    public function __construct(ProfileServiceInterface $profileService)
+    {
+        $this->profileService = $profileService;
+    }
+
     public function show(): View
     {
-        return view('pages.profile.show', ['user' => auth()->user()]);
+        $user = $this->profileService->getUserProfile();
+        return view('pages.profile.show', compact('user'));
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $user = auth()->user();
-
-        $user->update($request->validated());
+        $this->profileService->updateUserProfile($request);
 
         return redirect()->route('pages.profile.show')
             ->with('status', 'Profile updated successfully');
@@ -32,17 +39,16 @@ class ProfileController extends Controller
 
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
-        $user = auth()->user();
+        try {
+            $this->profileService->updateUserPassword($request);
 
-        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->route('pages.profile.show')
+                ->with('status', 'Password updated successfully');
+        } catch (ValidationException $e) {
             return redirect()->back()
-                ->withErrors(['current_password' => 'The current password is incorrect'])
+                ->withErrors($e->errors())
                 ->withInput();
         }
-
-        $user->update(['password' => Hash::make($request->password)]);
-
-        return redirect()->route('pages.profile.show')
-            ->with('status', 'Password updated successfully');
     }
 }
+
