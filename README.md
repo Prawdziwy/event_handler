@@ -51,5 +51,18 @@ npm run dev:backend
 ```
 
 ## Preview
-<img src="https://i.imgur.com/dATOKt1.png" />
+<details>
+    <summary>Home page</summary>
+    <img src="https://i.imgur.com/dATOKt1.png">
+</details>
 
+<details>
+    <summary>Calendar page - info, members section</summary>
+    <img src="https://i.imgur.com/ECkjoGl.png">
+</details>
+
+<details>
+    <summary>Calendar page - calendar section</summary>
+    <img src="https://i.imgur.com/7sxckKh.png">
+    <img src="https://i.imgur.com/sEl51Nu.png">
+</details>
